@@ -8,31 +8,26 @@
 #include <stdlib.h>
 
 int size=500;
-long int isPrime(long int);
-long int N,p,q,e,d;
-long int getCoprime(long int);
-long int getMultiInverse(long int,long int);
-long int encrypt(long int,long int,long int);
-long int decrypt(long int,long int,long int);
+int isPrime(int);
+int N,p,q,e,d;
+int getCoprime(int);
+int getMultiInverse(int,int);
+int encrypt(int,int,char);
+int decrypt(int,int,int);
 int f=0;
-long int C;
+int C;
 
 
 int main(int argc, char** argv) {
-	long int M[size];
+	int M[size];
 	char input[size];
 
-//	long int t=2;
-//	long int c=1;
-//	long int j=0;
-//	for(j=0;j<0;j++)
-//		c=c*t;
-//	 printf("%d\n",c);
 
     printf("Enter First Prime\n");
     fflush(stdout);
-    if (scanf(" %d", &p)  != 1) {
-    }
+    scanf(" %d", &p);
+//    if (scanf(" %d", &p)  != 1) {
+//    }
     f=isPrime(p);
     if (f == 0) {
         printf("Not a Prime\n");
@@ -42,8 +37,9 @@ int main(int argc, char** argv) {
 
     printf("Enter second Prime\n");
     fflush(stdout);
-    if (scanf(" %d", &q)  != 1) {
-    }
+    scanf(" %d", &q);
+//    if (scanf(" %d", &q)  != 1) {
+//    }
     f=isPrime(q);
     if (f == 0) {
         printf("Not a Prime\n");
@@ -63,37 +59,41 @@ int main(int argc, char** argv) {
 
     printf("Enter Message\n");
     fflush(stdout);
-    if (scanf("%s", &input)  != 1) {
-    }
-    
-    //printf("%s",input);
 
+    char ch;
+    while ((ch = getchar()) != '\n' && ch != EOF);
+    fgets (input, 500, stdin);
+    printf("Your input:%s",input);
+
+    //encrypt the message
     int i=0;
-//    for(i=0;i<size;i++)
-//    	M[i]=input[i];
-
-    for(i=0;i<size;i++){
-    	input[i]=encrypt(e,N,input[i]);
+    int eM[strlen(input)];
+    for(i=0;i<strlen(input);i++){
+    	 int x =encrypt(e,N,input[i]);
+    	 eM[i]=x;
     }
 
-    printf("%s\n",input);
+    for(i=0;i<strlen(input);i++)
+    	 printf("%c",eM[i]);
+    	 printf("\n");
 
-
-//    for(i=0;i<size;i++)
-//    	M[i]=input[i];
-
-    for(i=0;i<size;i++){
-    	input[i]=decrypt(d,N,input[i]);
+    //decrypt the message
+    int dM[strlen(input)];
+    for(i=0;i<strlen(input);i++){
+    	int x=decrypt(d,N,eM[i]);
+    	dM[i]=x;
     }
 
-    printf("%s\n",input);
+    for(i=0;i<strlen(input);i++)
+    	 printf("%c",dM[i]);
+    	 printf("\n");
 
     return 0;
 }
 
-//--------------------------------------------------
-long int isPrime(long int num){
-	   long int i=0;
+//-----------------------------------------------------------------------------------------
+int isPrime(int num){
+	   int i=0;
        for(i=2;i<sqrt(num);i++)
        {
            if(num%i == 0){
@@ -103,11 +103,11 @@ long int isPrime(long int num){
         return 1;
 }
 
-long int getCoprime(long int n)
+int getCoprime(int n)
 {
-	long int num=n;
-	long int c=0;
-	long int primef[n];
+	int num=n;
+	int c=0;
+	int primef[n];
     
     //find prime factor of num. Store in primef
     int   div = 2;   
@@ -126,9 +126,9 @@ long int getCoprime(long int n)
     }
     
     //find list of coprime from prime factors
-    long int i=0;
-    long int j=0;
-    long int N[num];
+    int i=0;
+    int j=0;
+    int N[num];
     for (j=1;j<num;j++){	//array of 1-num
         N[j]=j;
     }
@@ -143,8 +143,8 @@ long int getCoprime(long int n)
     }
     
     //extract coprime list from N[]
-    long int coPrimeList[num];
-    long int s=0;
+    int coPrimeList[num];
+    int s=0;
     for(j=1;j<num;j++){
         if(N[j]!=0){
             coPrimeList[s]=N[j];
@@ -154,14 +154,10 @@ long int getCoprime(long int n)
     }
 
 
-//    for(j=0;j<s;j++){
-//    	printf("%d ",coPrimeList[j]);
-//    }
-
     //randomly choose a coprime
     while(1){
-    	long int r=rand() % s;
-    	long int x =coPrimeList[r];
+    	int r=rand() % s;
+    	int x =coPrimeList[r];
     	if(x!=p&&x!=q){
     		return x;
     	}
@@ -170,7 +166,7 @@ long int getCoprime(long int n)
 }
 
 
-long int getMultiInverse(long int num, long int N){
+int getMultiInverse(int num, int N){
     int i=0;
     while(1){
         if((num*i)%N==1){
@@ -182,20 +178,23 @@ long int getMultiInverse(long int num, long int N){
 }
 
 
-long int encrypt(long int e,long int N,long int M){
-	long int i;
-	long int C=1;
+int encrypt(int e,int N,char M){
+	//printf("This Number %d which is %c in Char\n",M,M);
+	int i;
+	int C=1;
 	for(i=0;i<e;i++)
-		C=C*M;
+		C=C*M%N;
 	C=C%N;
+
 	return C;
 }
 
-long int decrypt(long int d,long int N,long int C){
-	long int i;
-	long int M=1;
+int decrypt(int d,int N,int C){
+	int i;
+	int M=1;
 	for(i=0;i<d;i++)
-		M=M*C;
+		M=M*C%N;
 	M=M%N;
+
 	return M;
 }
