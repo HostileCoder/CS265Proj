@@ -52,10 +52,11 @@ void BigFFA(mpz_t N){
 		 mpz_add(y,y,one);
 	}
 
+	mpz_sqrt(NplusYsq,NplusYsq);
 	mpz_sub(ans, NplusYsq, y);
-	gmp_printf(":%Zd\n",NplusYsq);
-	gmp_printf(":%Zd\n",y);
-	gmp_printf(":%Zd\n",ans);
+//	gmp_printf(":%Zd\n",NplusYsq);
+//	gmp_printf(":%Zd\n",y);
+	gmp_printf("%Zd\n",ans);
 
 }
 
